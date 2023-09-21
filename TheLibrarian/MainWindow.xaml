@@ -1,0 +1,22 @@
+﻿<Window x:Class="TheLibrarian.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TheLibrarian"
+        mc:Ignorable="d"
+        Title="MainWindow" WindowState="Maximized" Height="450" Width="800" WindowStyle="None">
+    <Grid>
+        <Grid.Background>
+            <ImageBrush ImageSource="\Images\MainMenu.png" />
+            <!-- Replace with your image file path -->
+        </Grid.Background>
+
+        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="10">
+            <Button x:Name="btnReplacingBooks" Height="30" Width="300" Content="Replacing Books" Click="btnReplacingBooks_Click" />
+            <Button x:Name="btnIdentifyingAreas" Height="30" Width="300" Content="Identifying Areas" IsEnabled="False" Foreground="Gray"/>
+            <Button x:Name="btnFindingCallNumbers" Height="30" Width="300" Content="Finding Call Numbers" IsEnabled="False" Foreground="Gray"/>
+            <Button x:Name="btnExit" Height="30" Width="300" Content="Exit" Click="btnExit_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
