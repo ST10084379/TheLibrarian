@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TheLibrarian"
         mc:Ignorable="d"
         Title="ReplacingBooks" WindowState="Maximized" WindowStyle="None">
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -22,7 +22,24 @@
             <ImageBrush ImageSource="\Images\libbg.png" />
             <!-- Replace with your image file path -->
         </Grid.Background>
-        
+
+        <!--Popup for the Instructions-->
+        <Grid x:Name="Instructions" Visibility="Hidden" Grid.RowSpan="2" Grid.ColumnSpan="2" VerticalAlignment="Center" Background="Black" Opacity="0.7" Height="750" Width="650" Panel.ZIndex="1">
+            <Label Content="Instructions" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" Height="40"/>
+            <StackPanel Orientation="Vertical" Height="680">
+                <TextBlock TextWrapping="Wrap" Text="We desperately need your help!!
+                           All of our books here are sorted using the Dewey Decimal system, and right now, our librarian has her hands full!
+                           Can you help us sort the books on this bookshelf??"
+                            Foreground="White" Background="Black" FontSize="24" Margin="0,20,0,0" VerticalAlignment="Top" FontFamily="Consolas" Height="200" Width="600"/>
+                <TextBlock TextWrapping="Wrap" Text="On the top left of the screen you will see your number of attempts left, you only get 10! You will also see a timer that counts down from 30 to 0. 
+                           Click on the start button, enter your username and once you click ok the game will begin! Sort the books in ascending order from left to right. 
+                           The quicker you finish, and the less moves you make, the higher your score! But be sure to order the books correctly, or you won't get a score at all!!
+                           Play against some friends and check the scoreboard to find out who is the ultimate librarian!"
+                            Foreground="White" Background="Black" FontSize="24" Margin="0,10,0,0" VerticalAlignment="Bottom" FontFamily="Consolas" Height="450" Width="600"/>
+            </StackPanel>
+            <Button x:Name="CloseInstructions" Content="Close"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,572,0,0" Click="CloseInstructions_Click" />
+        </Grid>
+
         <ListBox x:Name="BookShelf"
          VerticalAlignment="Top" Grid.Row="0" Grid.ColumnSpan="100" Height="600" Width="900" HorizontalAlignment="Right"
          Margin="0,0,0,0" Background="Transparent" BorderBrush="SaddleBrown" BorderThickness="10">
@@ -36,7 +53,7 @@
                 <DataTemplate>
                     <!-- Use a Vertical StackPanel for TextBlock content -->
                     <Border BorderBrush="SaddleBrown" BorderThickness="3" Height="570" CornerRadius="3" Background="#8B4513">
-                    <TextBlock>
+                        <TextBlock>
                             <TextBlock.Style>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="LayoutTransform">
@@ -65,12 +82,18 @@
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
-        
-        <!--Stackpnel for the buttons-->
-        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1" >
+
+        <!--Stackpnel for the buttons to play-->
+        <StackPanel x:Name="stkPlayButtons" Orientation="Horizontal" Grid.Row="1" Grid.Column="1" IsEnabled="False" >
             <Button x:Name="btnStart" Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="50,10,50,0" Click="btnStart_Click"/>
             <Button x:Name="btnClear" Content="Clear" VerticalAlignment="Top" Margin="50,10,50,0" Click="btnClear_Click"/>
             <Button x:Name="btnCheck" Content="Check" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="50,10,50,0" Click="btnCheck_Click" />
+        </StackPanel>
+
+        <!--Stackpanel for the buttons to view menu and scoreboard-->
+        <StackPanel x:Name="stkMenuButtons" HorizontalAlignment="Left" VerticalAlignment="Bottom" Orientation="Horizontal" Grid.Column="0" Grid.Row="1" IsEnabled="False" >
+            <Button x:Name="btnMenu" Grid.Row="1" Grid.Column="0" Content="Main Menu"   Click="btnMenu_Click" Margin="10,0,0,0"/>
+            <Button x:Name="btnScoreBoard" Grid.Row="1" Grid.Column="0" Content="View Scoreboard"  Margin="80,0,0,0" Click="btnScoreBoard_Click"  />
         </StackPanel>
 
         <!--Stackpnel for the labels-->
@@ -80,6 +103,34 @@
             <Label x:Name="timeRemaining" Grid.Row="0" Grid.Column="0" Height="50" Content="Time Remaining:" Foreground="White"  HorizontalAlignment="Left" FontWeight="SemiBold" FontSize="30" VerticalAlignment="Top" />
             <Label x:Name="countDown" Grid.Row="0" Grid.Column="0" Height="100" Content="30" HorizontalAlignment="Left" Foreground="White" FontWeight="SemiBold" FontSize="30" VerticalAlignment="Top"  />
         </StackPanel>
-        <Button x:Name="btnMenu" Grid.Row="1" Grid.Column="0" Content="Main Menu" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10" Click="btnMenu_Click" />
+
+        <!--Window to show the user scoreboard-->
+        <Grid x:Name="UserScoreBoard" Visibility="Hidden" Grid.RowSpan="2" Grid.ColumnSpan="2" VerticalAlignment="Center" Background="Black" Opacity="0.7" Height="500" Width="450">
+            <Label Content="User Score Board" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" Height="40"/>
+            <ListBox Margin="20" Name="UserScoresListBox" Background="Black" Height="420">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding}" Foreground="White" Background="Black" FontSize="28" FontFamily="Consolas"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button x:Name="btnCloseScoreboard" Content="Close"  HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,0,20,0" Click="btnCloseScoreboard_Click" />
+        </Grid>
+
+        <!--Username Popup-->
+        <Popup x:Name="UsernamePopup" IsOpen="False" Placement="Center" >
+            <Border BorderBrush="Black" BorderThickness="1" Background="Black" Opacity="0.7">
+                <StackPanel Margin="10">
+                    <TextBlock Text="Enter Username: " Foreground="White" FontSize="24" FontFamily="Consolas" FontWeight="SemiBold"/>
+                    <TextBox x:Name="tbUsername" />
+                    <Button Content="OK" Click="OKButton_Click" />
+                    <Button Content="Cancel" Click="CancelButton_Click" />
+                </StackPanel>
+            </Border>
+        </Popup>
     </Grid>
+
+
 </Window>

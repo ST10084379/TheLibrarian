@@ -40,8 +40,18 @@
             <Setter Property="FontSize" Value="30"/>
         </Style>
 
-        <!--<Style TargetType="TextBlock">
-            
+        <!--Style for textblocks
+        <Style TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
         </Style>-->
+
+        <!--Style for textboxes-->
+        <Style TargetType="TextBox">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
     </Application.Resources>
 </Application>

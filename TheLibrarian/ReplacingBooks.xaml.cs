@@ -22,6 +22,7 @@ namespace TheLibrarian
     {
         List<string> Books = new List<string>();
         List<string> Sortedbooks = new List<string>();
+        List<string> UserScores = new List<string>();
 
         // Object of the dispatch timer 
         DispatcherTimer timer = new DispatcherTimer();
@@ -29,9 +30,11 @@ namespace TheLibrarian
 
         private int count = 10;
         private int countDownTime = 30;
-        private bool isGameRunning;
         private int timeScore;
         private int remainingSeconds;
+        private string userName;
+        private int score;
+        private string userScore;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -49,9 +52,10 @@ namespace TheLibrarian
         {
             DataContext = this;
             InitializeComponent();
+            Instructions.Visibility = Visibility.Visible;
         }
 
-        public void UpdateListBox()
+        public void UpdateBooksListBox()
         {
             BookShelf.Items.Clear();
             foreach (var book in Books)
@@ -63,9 +67,6 @@ namespace TheLibrarian
         public void AddItems()
         {
             Random rand = new Random();
-
-            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            Random random = new Random();
             StringBuilder randomString = new StringBuilder(3);
 
             // Adding to the list
@@ -77,6 +78,24 @@ namespace TheLibrarian
 
                 Books.Add(rand.Next(100, 999).ToString() + "." + rand.Next(10, 99).ToString() + " " + randomChars);
                 Sortedbooks.Add(Books[i]);
+            }
+        }
+
+        // Method that adds the username and the users score to the userScores list
+        public void AddUserScores()
+        {
+            // Add to the list
+            userScore = userName + " : " + score.ToString();
+            UserScores.Add(userScore);
+        }
+
+        // Method to add the userScores list to the listbox
+        public void UpdateUserScores()
+        {
+            UserScoresListBox.Items.Clear();
+            foreach (var user in UserScores)
+            {
+                UserScoresListBox.Items.Add(user);
             }
         }
 
@@ -113,8 +132,9 @@ namespace TheLibrarian
 
         public void CompareList()
         {
-            int score = Count;
-            timeScore = countDownTime - remainingSeconds;
+            int tempSCore = Count;
+            timeScore = remainingSeconds;
+            score = tempSCore + timeScore;
             bool pass = false;
 
             for (int i = 0; i < Books.Count; i++)
@@ -131,8 +151,16 @@ namespace TheLibrarian
 
             if (pass)
             {
+
+                if (score == 0)
+                {
+                    score++;
+                }
+
                 MessageBox.Show("Congradulations! You have sorted the list correctly");
-                MessageBox.Show("Your score is " + score + " You achieved this in: " + timeScore + " seconds" );
+                MessageBox.Show("Your score is: " + score);
+                AddUserScores();
+                UpdateUserScores();
                 ResetTimer();
             }
             else
@@ -157,13 +185,14 @@ namespace TheLibrarian
                     Books.RemoveAt(draggedIndex);
                     Books.Insert(targetIndex, temp);
 
-                    UpdateListBox();
+                    UpdateBooksListBox();
                     Count--;
 
                     if (Count == 0)
                     {
                         MessageBox.Show("No More Moves Left!");
                         BookShelf.IsEnabled = false;
+                        UpdateBooksListBox();
                     }
                 }
             }
@@ -218,11 +247,9 @@ namespace TheLibrarian
             stopwatch.Stop();
         }
 
-        private void btnClear_Click(object sender, RoutedEventArgs e)
+        private void DisableAndClearListBox()
         {
-            // Reset the timer
-            ResetTimer();
-
+            btnScoreBoard.IsEnabled = true;
             btnStart.IsEnabled = true;
             BookShelf.Background = new SolidColorBrush(Colors.Transparent);
             BookShelf.Items.Clear();
@@ -230,20 +257,28 @@ namespace TheLibrarian
             Books.Clear();
             Sortedbooks.Clear();
             Count = 10;
+            tbUsername.Clear();
         }
 
-        private void btnStart_Click(object sender, RoutedEventArgs e)
+        private void StartAndClearListBox()
         {
-            // Reset the timer
-            ResetTimer();
-
+            btnScoreBoard.IsEnabled = false;
             btnStart.IsEnabled = false;
             Books.Clear();
             Sortedbooks.Clear();
             BookShelf.Background = new SolidColorBrush(Colors.BurlyWood);
-            CountdownTimer();
-            AddItems();
-            UpdateListBox();
+        }
+
+        private void btnClear_Click(object sender, RoutedEventArgs e)
+        {
+            // Reset the timer
+            ResetTimer();
+            DisableAndClearListBox();
+        }
+
+        private void btnStart_Click(object sender, RoutedEventArgs e)
+        {
+            UsernamePopup.IsOpen = true;
         }
 
         private void btnCheck_Click(object sender, RoutedEventArgs e)
@@ -265,14 +300,7 @@ namespace TheLibrarian
                 {
                     SortedList();
                     CompareList();
-
-                    btnStart.IsEnabled = true;
-                    BookShelf.Background = new SolidColorBrush(Colors.Transparent);
-                    BookShelf.Items.Clear();
-                    BookShelf.IsEnabled = true;
-                    Books.Clear();
-                    Sortedbooks.Clear();
-                    Count = 10;
+                    DisableAndClearListBox();
                 }
             }
         }
@@ -282,6 +310,57 @@ namespace TheLibrarian
             MainWindow main = new MainWindow();
             main.Show();
             this.Close();
+        }
+
+        private void btnScoreBoard_Click(object sender, RoutedEventArgs e)
+        {
+            UserScoreBoard.Visibility = Visibility.Visible;
+            stkPlayButtons.IsEnabled = false;
+            stkMenuButtons.IsEnabled = false;
+        }
+
+        private void btnCloseScoreboard_Click(object sender, RoutedEventArgs e)
+        {
+            UserScoreBoard.Visibility = Visibility.Hidden;
+            stkPlayButtons.IsEnabled = true;
+            stkMenuButtons.IsEnabled = true;
+        }
+
+        // Okay button action for the username popup
+        private void OKButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            if (tbUsername.Text.Length == 0)
+            {
+                System.Windows.Forms.MessageBox.Show("Please enter your username");
+            }
+            else
+            {
+                userName = tbUsername.Text;
+                // Reset the timer
+                ResetTimer();
+                StartAndClearListBox();
+                CountdownTimer();
+                AddItems();
+                UpdateBooksListBox();
+                
+                // Do something with the user's input
+                UsernamePopup.IsOpen = false; // Close the popup
+            }
+           
+        }
+
+        // Cancel button action for the username popup
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            UsernamePopup.IsOpen = false; // Close the popup
+        }
+
+        private void CloseInstructions_Click(object sender, RoutedEventArgs e)
+        {
+            Instructions.Visibility = Visibility.Collapsed;
+            stkPlayButtons.IsEnabled = true;
+            stkMenuButtons.IsEnabled = true;    
         }
     }
 }
