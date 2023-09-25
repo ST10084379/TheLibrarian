@@ -17,3 +17,5 @@ C:\Users\fowle\source\repos\TheLibrarian\TheLibrarian\obj\Debug\TheLibrarian.csp
 C:\Users\fowle\source\repos\TheLibrarian\TheLibrarian\obj\Debug\TheLibrarian.csproj.CoreCompileInputs.cache
 C:\Users\fowle\source\repos\TheLibrarian\TheLibrarian\obj\Debug\TheLibrarian.exe
 C:\Users\fowle\source\repos\TheLibrarian\TheLibrarian\obj\Debug\TheLibrarian.pdb
+C:\Users\fowle\source\repos\TheLibrarian\TheLibrarian\obj\Debug\LoadingScreen.g.cs
+C:\Users\fowle\source\repos\TheLibrarian\TheLibrarian\obj\Debug\LoadingScreen.baml

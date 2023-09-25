@@ -23,6 +23,7 @@ namespace TheLibrarian
         List<string> Books = new List<string>();
         List<string> Sortedbooks = new List<string>();
         List<string> UserScores = new List<string>();
+        List<string> SortedUserScores = new List<string>();
 
         // Object of the dispatch timer 
         DispatcherTimer timer = new DispatcherTimer();
@@ -52,7 +53,6 @@ namespace TheLibrarian
         {
             DataContext = this;
             InitializeComponent();
-            Instructions.Visibility = Visibility.Visible;
         }
 
         public void UpdateBooksListBox()
@@ -64,6 +64,7 @@ namespace TheLibrarian
             }   
         }
 
+        // Add the randomly generated call numbers to the Books list 
         public void AddItems()
         {
             Random rand = new Random();
@@ -84,21 +85,33 @@ namespace TheLibrarian
         // Method that adds the username and the users score to the userScores list
         public void AddUserScores()
         {
-            // Add to the list
+            // Adding the username and user score to the list
             userScore = userName + " : " + score.ToString();
             UserScores.Add(userScore);
+
+            // Sorting the user scores list so that the highest score is at the top of the list
+            SortedUserScores = UserScores
+            .OrderByDescending(l => int.Parse(l.Substring(l.LastIndexOf(":") + 1)))
+            .ToList();
+
+            if (SortedUserScores[0] == userScore)
+            {
+                System.Windows.Forms.MessageBox.Show("Congradulations!! You have set the new highest score");
+            }
+            
         }
 
         // Method to add the userScores list to the listbox
         public void UpdateUserScores()
         {
             UserScoresListBox.Items.Clear();
-            foreach (var user in UserScores)
+            foreach (var user in SortedUserScores)
             {
                 UserScoresListBox.Items.Add(user);
             }
         }
-
+        
+        // Correctly sorted list of books
         public void SortedList()
         {
             if (Books != null)
@@ -157,15 +170,14 @@ namespace TheLibrarian
                     score++;
                 }
 
-                MessageBox.Show("Congradulations! You have sorted the list correctly");
-                MessageBox.Show("Your score is: " + score);
+                MessageBox.Show("Your score is: " + score, "Correct! ");
                 AddUserScores();
                 UpdateUserScores();
                 ResetTimer();
             }
             else
             {
-                MessageBox.Show("Incorrect! Unfortunately you did not sort the list correctly");
+                MessageBox.Show("Unfortunately you did not sort the list correctly", "Incorrect!");
                 ResetTimer();
             }
         }
@@ -358,9 +370,16 @@ namespace TheLibrarian
 
         private void CloseInstructions_Click(object sender, RoutedEventArgs e)
         {
-            Instructions.Visibility = Visibility.Collapsed;
+            Instructions.Visibility = Visibility.Hidden;
             stkPlayButtons.IsEnabled = true;
             stkMenuButtons.IsEnabled = true;    
+        }
+
+        private void btnInstructions_Click(object sender, RoutedEventArgs e)
+        {
+            Instructions.Visibility = Visibility.Visible;
+            stkPlayButtons.IsEnabled = false;
+            stkMenuButtons.IsEnabled = false;
         }
     }
 }
